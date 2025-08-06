@@ -1,7 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../context/auth'
+import { toast } from 'react-hot-toast'
 
 const Header = () => {
+  const [auth, setAuth] = useAuth()
+  const handleLogout = () => {
+    setAuth({
+      ...auth,
+      user: null,
+      token: null,
+    })
+    localStorage.removeItem('auth')
+    toast.success("Logout successfully")
+  }
   return (
     <>
       <nav className="navbar navbar-expand-lg active bg-body-tertiary">
@@ -20,16 +32,21 @@ const Header = () => {
               <li className="nav-item">
                 <Link to='/category' className="nav-link " aria-current="page" >Category</Link>
               </li>
-              <li className="nav-item">
-                <Link to='/register' className="nav-link" >Register</Link>
-              </li>
-              <li className="nav-item">
-                <Link to='/login' className="nav-link" >Login</Link>
-              </li>
+              {!auth.user ? (<>
+                <li className="nav-item">
+                  <Link to='/register' className="nav-link" >Register</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to='/login' className="nav-link" >Login</Link>
+                </li></>) :
+                (<>
+                  <li className="nav-item">
+                    <Link to='/login' onClick={handleLogout} className="nav-link" >Logout</Link>
+                  </li>
+                </>)}
               <li className="nav-item">
                 <Link to='/cart' className="nav-link" >Cart</Link>
               </li>
-
             </ul >
           </div>
         </div >
